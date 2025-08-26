@@ -17,5 +17,4 @@ public class Writer {
 
     @ToString.Exclude
     private List<Post> posts;
-    private Status status = Status.ACTIVE;
 }

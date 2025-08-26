@@ -1,7 +1,6 @@
 package homework.org.app.service.impl;
 
 import homework.org.app.exception.ServiceException;
-import homework.org.app.model.Status;
 import homework.org.app.model.Writer;
 import homework.org.app.repository.WriterRepository;
 import homework.org.app.service.WriterService;
@@ -20,49 +19,28 @@ public class WriterServiceImpl implements WriterService  {
     @Override
     public Writer getByID(Long id) {
         if (id == null) throw new RuntimeException("ID must be not null");
-        try {
-            return repository.getById(id);
-        } catch (SQLException e) {
-            throw new ServiceException("Failed to find writer ", e);
-
-        }
+        return repository.getById(id);
     }
 
     @Override
     public List<Writer> getAll() {
-        try {
-            return repository.getAll();
-        } catch (SQLException e) {
-            throw new ServiceException("Failed to get all writers", e);
-        }
+        return repository.getAll();
     }
 
     @Override
     public Writer save(Writer writer) {
-        try {
-            return repository.save(writer);
-        } catch (SQLException e) {
-            throw new ServiceException("Failed to save writer", e);
-        }
+        return repository.save(writer);
     }
 
     @Override
     public Writer update(Writer writer) {
-        try {
-            return repository.update(writer);
-        } catch (SQLException e) {
-            throw new ServiceException("Failed to update writer", e);
-        }
+        return repository.update(writer);
     }
 
     @Override
     public void deleteById(Long id) {
         if (id == null) throw new RuntimeException("ID must be not null");
-        try {
-            repository.deleteById(id);
-        } catch (SQLException e) {
-            throw new ServiceException("Failed to delete by id writer", e);
-        }
+        repository.deleteById(id);
     }
 
     @Override
@@ -77,7 +55,6 @@ public class WriterServiceImpl implements WriterService  {
             Writer newWriter = new Writer();
             newWriter.setFirstname(firstName);
             newWriter.setLastname(lastName);
-            newWriter.setStatus(Status.ACTIVE);
 
             return repository.save(newWriter);
         } catch (SQLException e) {

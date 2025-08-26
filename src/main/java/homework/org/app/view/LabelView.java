@@ -1,9 +1,9 @@
 package homework.org.app.view;
 
 import homework.org.app.controller.LabelController;
+import homework.org.app.exception.NotFoundException;
 import homework.org.app.model.Label;
 
-import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Objects;
@@ -73,38 +73,43 @@ public class LabelView implements EntityView<Label> {
     public void edit() {
         System.out.println("\n___ Редактирование лэйбла ___");
         System.out.print("Введите ID лэйбл для редактирования\n");
-        Long id = scanner.nextLong();
-        scanner.nextLine();
-
-        Label existing = null;
         try {
-            existing = controller.getByID(id);
-        } catch (SQLException e) {
-            throw new RuntimeException("This id not founded ", e);
+            Long id = scanner.nextLong();
+            scanner.nextLine();
+
+            Label existing = controller.getByID(id);
+
+            System.out.println("\n___ Текущие данные ___");
+            System.out.println("Название: " + existing.getName());
+
+            System.out.println("\n___ Введите новые данные (либо оставьте пустым чтобы не изменять ___");
+            System.out.print("Новое название: \n");
+            String newName = scanner.nextLine();
+
+            if (!newName.isEmpty()) {
+                existing.setName(newName);
         }
+
         if (existing == null) {
             System.out.println("Лэйбл с таким ID не найден");
             return;
         }
 
-        System.out.println("\n___ Текущие данные ___");
-        System.out.println("Название: " + existing.getName());
-
-        System.out.println("\n___ Введите новые данные (либо оставьте пустым чтобы не изменять ___");
-        System.out.print("Новое название: \n");
-        String newName = scanner.nextLine();
-
-        if (!newName.isEmpty()) {
-            existing.setName(newName);
-        }
-
-        try {
-            Label updateLabel = controller.update(existing);
-            System.out.println("Данные лэйбла успешно обновлены");
-            System.out.println("ID: " + updateLabel.getId());
-            System.out.println("Название: " + updateLabel.getName());
+            try {
+                Label updateLabel = controller.update(existing);
+                System.out.println("Данные лэйбла успешно обновлены");
+                System.out.println("ID: " + updateLabel.getId());
+                System.out.println("Название: " + updateLabel.getName());
+            } catch (Exception e) {
+                System.out.println("Ошибка при обновлении: " + e.getMessage());
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Ошибка: введите корректный числовой ID\n");
+            scanner.nextLine();
+        } catch (NotFoundException e) {
+            System.out.println("Лэйбл с таким ID не найден: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println("Ошибка при обновлении: " + e.getMessage());
+            System.out.println("Ошибка: " + e.getMessage());
         }
     }
 
@@ -117,7 +122,7 @@ public class LabelView implements EntityView<Label> {
             scanner.nextLine();
 
             controller.deleteById(id);
-            System.out.println("Лейбл с ID " + id + " помечен как удаленный");
+            System.out.println("Лейбл с ID " + id + " удален");
         } catch (InputMismatchException e) {
             System.out.println("Ошибка: введите корректный числовой ID\n");
             scanner.nextLine();
@@ -153,7 +158,6 @@ public class LabelView implements EntityView<Label> {
 
             System.out.println("\n___ Текущие данные ___");
             System.out.println("Название: " + existing.getName());
-            System.out.println("Статус: " + existing.getStatus().getDisplayName());
 
         } catch (InputMismatchException e) {
             System.out.println("Ошибка: введите корректный числовой ID\n");

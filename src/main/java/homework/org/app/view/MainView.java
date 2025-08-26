@@ -9,9 +9,9 @@ import homework.org.app.controller.impl.WriterControllerImpl;
 import homework.org.app.repository.LabelRepository;
 import homework.org.app.repository.PostRepository;
 import homework.org.app.repository.WriterRepository;
-import homework.org.app.repository.mysql.MySqlLabelRepository;
-import homework.org.app.repository.mysql.MySqlPostRepository;
-import homework.org.app.repository.mysql.MySqlWriterRepository;
+import homework.org.app.repository.jdbc.JdbcLabelRepository;
+import homework.org.app.repository.jdbc.JdbcPostRepository;
+import homework.org.app.repository.jdbc.JdbcWriterRepository;
 import homework.org.app.service.LabelService;
 import homework.org.app.service.PostService;
 import homework.org.app.service.WriterService;
@@ -32,9 +32,9 @@ public class MainView {
 
     public MainView() {
         this.scanner = new Scanner(System.in);
-        WriterRepository writerRepository = new MySqlWriterRepository(connectionManager);
-        PostRepository postRepository = new MySqlPostRepository(connectionManager);
-        LabelRepository labelRepository = new MySqlLabelRepository(connectionManager);
+        WriterRepository writerRepository = new JdbcWriterRepository(connectionManager);
+        PostRepository postRepository = new JdbcPostRepository();
+        LabelRepository labelRepository = new JdbcLabelRepository();
 
         WriterService writerService = new WriterServiceImpl(writerRepository);
         PostService postService = new PostServiceImpl(postRepository);
@@ -45,7 +45,7 @@ public class MainView {
         LabelController labelController = new LabelControllerImpl(labelService);
 
         this.writerView = new WriterView(writerController, scanner);
-        this.postView = new PostView(postController, writerController, scanner);
+        this.postView = new PostView(postController, writerController, labelController, scanner);
         this.labelView = new LabelView(labelController, scanner);
     }
 

@@ -1,25 +1,28 @@
 package homework.org.app.view;
 
+import homework.org.app.controller.LabelController;
 import homework.org.app.controller.PostController;
 import homework.org.app.controller.WriterController;
+import homework.org.app.model.Label;
 import homework.org.app.model.Post;
 import homework.org.app.model.Writer;
 
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class PostView implements EntityView<Post>{
     private final PostController postController;
     private final WriterController writerController;
+    private final LabelController labelController;
     private final Scanner scanner;
 
-    public PostView(PostController postController, WriterController writerController, Scanner scanner) {
-        this.postController = Objects.requireNonNull(postController);
-        this.writerController = Objects.requireNonNull(writerController);
-        this.scanner = Objects.requireNonNull(scanner);
+    public PostView(PostController postController, WriterController writerController, LabelController labelController, Scanner scanner) {
+        this.postController = postController;
+        this.writerController = writerController;
+        this.labelController = labelController;
+        this.scanner = scanner;
     }
 
     @Override
@@ -82,8 +85,6 @@ public class PostView implements EntityView<Post>{
         } catch (Exception e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
-
-
     }
 
     @Override
@@ -115,8 +116,6 @@ public class PostView implements EntityView<Post>{
         if (!newTitle.isEmpty()) {
             existing.setContent(newTitle);
         }
-
-
         try {
             Post updatePost = postController.update(existing);
             System.out.println("Данные поста успешно обновлены");
@@ -152,8 +151,6 @@ public class PostView implements EntityView<Post>{
         if (list.isEmpty()) {
             System.out.println("Посты не найдены");
         }
-
-
         for (Post post : list) {
             System.out.println("Описание: " + post.getContent());
         }
@@ -187,6 +184,20 @@ public class PostView implements EntityView<Post>{
             scanner.nextLine();
         } catch (Exception e) {
             System.out.println("Ошибка при поиске: " + e.getMessage());
+        }
+    }
+
+    private void showAllLabels() {
+        System.out.println("\n___ Доступные лейблы ___");
+        List<Label> labels = labelController.getAll();
+
+        if (labels.isEmpty()) {
+            System.out.println("Лейблы не найдены");
+            return;
+        }
+
+        for (Label label : labels) {
+            System.out.println("ID: " + label.getId() + " | Название: " + label.getName());
         }
     }
 

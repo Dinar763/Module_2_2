@@ -1,11 +1,9 @@
 package homework.org.app.controller.impl;
 
 import homework.org.app.controller.WriterController;
-import homework.org.app.model.Status;
 import homework.org.app.model.Writer;
 import homework.org.app.service.WriterService;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class WriterControllerImpl implements WriterController {
@@ -52,7 +50,6 @@ public class WriterControllerImpl implements WriterController {
         Writer newWriter = new Writer();
         newWriter.setFirstname(firstName);
         newWriter.setLastname(lastName);
-        newWriter.setStatus(Status.ACTIVE);
 
         return writerService.save(newWriter);
     }

@@ -13,20 +13,20 @@ ALTER TABLE label AUTO_INCREMENT = 1;
 ALTER TABLE writer AUTO_INCREMENT = 1;
 
 --changeset dgizzyatov:3
-INSERT INTO label (name, status) VALUES
-    ('Важное', 'ACTIVE'),
-    ('Технологии', 'ACTIVE'),
-    ('Искусство', 'ACTIVE'),
-    ('Наука', 'ACTIVE'),
-    ('История', 'ACTIVE');
+INSERT INTO label (name) VALUES
+    ('Важное'),
+    ('Технологии'),
+    ('Искусство'),
+    ('Наука'),
+    ('История');
 
 --changeset dgizzyatov:4
-INSERT INTO writer (firstname, lastname, status) VALUES
-    ('Иван', 'Иванов', 'ACTIVE'),
-    ('Петр', 'Петров', 'ACTIVE'),
-    ('Мария', 'Сидорова', 'ACTIVE'),
-    ('Алексей', 'Смирнов', 'ACTIVE'),
-    ('Елена', 'Кузнецова', 'ACTIVE');
+INSERT INTO writer (firstname, lastname) VALUES
+    ('Иван', 'Иванов'),
+    ('Петр', 'Петров'),
+    ('Мария', 'Сидорова'),
+    ('Алексей', 'Смирнов'),
+    ('Елена', 'Кузнецова');
 
 --changeset dgizzyatov:5
 INSERT INTO post (content, status, writer_id) VALUES

@@ -20,7 +20,8 @@ public class PostControllerImpl implements PostController {
 
     @Override
     public List<Post> getAll() {
-        return postService.getAll();
+        List<Post> posts = postService.getAll();
+        return posts;
     }
 
     @Override

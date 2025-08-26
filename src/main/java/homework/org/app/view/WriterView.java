@@ -126,7 +126,7 @@ public class WriterView implements EntityView <Writer> {
             scanner.nextLine();
 
             controller.deleteById(id);
-            System.out.println("Автор с ID " + id + " помечен как удаленный");
+            System.out.println("Автор с ID " + id + " удален");
         } catch (InputMismatchException e) {
             System.out.println("Ошибка: введите корректный числовой ID");
             scanner.nextLine();
@@ -165,7 +165,6 @@ public class WriterView implements EntityView <Writer> {
             System.out.println("\n___ Текущие данные ___");
             System.out.println("Имя: " + existing.getFirstname());
             System.out.println("Фамилия: " + existing.getLastname());
-            System.out.println("Статус: " + existing.getStatus().getDisplayName());
 
             if (existing.getPosts() != null && !existing.getPosts().isEmpty()) {
                 System.out.println("Количество постов у автора: " + existing.getPosts().size());

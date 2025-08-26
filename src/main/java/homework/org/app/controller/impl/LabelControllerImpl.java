@@ -4,7 +4,6 @@ import homework.org.app.controller.LabelController;
 import homework.org.app.model.Label;
 import homework.org.app.service.LabelService;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class LabelControllerImpl implements LabelController {

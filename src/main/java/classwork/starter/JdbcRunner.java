@@ -50,8 +50,6 @@ public class JdbcRunner {
             writer.setId(6L);
             writer.setFirstname("John");
             writer.setLastname("Doe");
-            writer.setStatus(Status.ACTIVE);
-
 
             Label label1 = new Label();
             label1.setId(1L); // Метка уже есть в БД

@@ -19,10 +19,10 @@ public class Post {
     private LocalDateTime created;
     private LocalDateTime updated;
 
-    @ToString.Exclude
+    //@ToString.Exclude
     private Writer writer;
 
-    @ToString.Exclude
+    //@ToString.Exclude
     private List<Label> labels = new ArrayList<>();
     private Status status = Status.ACTIVE;
 }

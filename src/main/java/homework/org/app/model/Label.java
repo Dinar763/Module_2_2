@@ -13,5 +13,4 @@ public class Label {
     @EqualsAndHashCode.Include
     private Long id;
     private String name;
-    private Status status = Status.ACTIVE;
 }

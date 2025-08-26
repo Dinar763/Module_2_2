@@ -3,8 +3,7 @@
 
 CREATE TABLE IF NOT EXISTS label (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  status ENUM('ACTIVE', 'UNDER_REVIEW', 'DELETED') NOT NULL
+  name VARCHAR(255) NOT NULL
 );
 
 --changeset dgizzyatov:2
@@ -12,8 +11,7 @@ CREATE TABLE IF NOT EXISTS label (
 CREATE TABLE IF NOT EXISTS writer (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     firstname VARCHAR(255) NOT NULL,
-    lastname VARCHAR(255) NOT NULL,
-    status ENUM('ACTIVE', 'UNDER_REVIEW', 'DELETED') NOT NULL
+    lastname VARCHAR(255) NOT NULL
 );
 
 --changeset dgizzyatov:3
@@ -37,25 +35,4 @@ CREATE TABLE IF NOT EXISTS post_label (
     FOREIGN KEY (post_id) REFERENCES post(id),
     FOREIGN KEY (label_id) REFERENCES label(id)
 );
-
---changeset dgizzyatov:5 splitStatements:false endDelimiter:/
-
-CREATE TRIGGER after_writer_update
-AFTER UPDATE ON writer
-FOR EACH ROW
-BEGIN
-    IF (NEW.status = 'DELETED' AND OLD.status != 'DELETED') THEN
-        UPDATE post
-        SET status = 'DELETED',
-        updated = CURRENT_TIMESTAMP
-        WHERE writer_id = NEW.id;
-    END IF;
-
-    IF (NEW.status = 'ACTIVE' AND OLD.status = 'DELETED') THEN
-        UPDATE post
-        SET status = 'ACTIVE',
-        updated = CURRENT_TIMESTAMP
-        WHERE writer_id = NEW.id;
-    END IF;
-END;
 /
