@@ -2,21 +2,21 @@ package homework.org.app.view;
 
 import homework.org.app.controller.WriterController;
 import homework.org.app.model.Writer;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
-import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
+@AllArgsConstructor
 public class WriterView implements EntityView <Writer> {
+    @NonNull
     private final WriterController controller;
+
+    @NonNull
     private final Scanner scanner;
 
-    public WriterView(WriterController controller, Scanner scanner) {
-        this.controller = Objects.requireNonNull(controller);
-        this.scanner = Objects.requireNonNull(scanner);
-    }
 
     @Override
     public void showMenu() {
@@ -78,11 +78,7 @@ public class WriterView implements EntityView <Writer> {
         scanner.nextLine();
 
         Writer existing = null;
-        try {
-            existing = controller.getByID(id);
-        } catch (SQLException e) {
-            throw new RuntimeException("This id not founded ", e);
-        }
+        existing = controller.getByID(id);
         if (existing == null) {
             System.out.println("Автор с таким ID не найден");
             return;

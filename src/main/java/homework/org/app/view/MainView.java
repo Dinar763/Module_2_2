@@ -3,9 +3,6 @@ package homework.org.app.view;
 import homework.org.app.controller.LabelController;
 import homework.org.app.controller.PostController;
 import homework.org.app.controller.WriterController;
-import homework.org.app.controller.impl.LabelControllerImpl;
-import homework.org.app.controller.impl.PostControllerImpl;
-import homework.org.app.controller.impl.WriterControllerImpl;
 import homework.org.app.repository.LabelRepository;
 import homework.org.app.repository.PostRepository;
 import homework.org.app.repository.WriterRepository;
@@ -18,7 +15,7 @@ import homework.org.app.service.WriterService;
 import homework.org.app.service.impl.LabelServiceImpl;
 import homework.org.app.service.impl.PostServiceImpl;
 import homework.org.app.service.impl.WriterServiceImpl;
-import homework.org.app.util.ConnectionPoolManager;
+import homework.org.app.util.ConnectionManager;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -28,21 +25,21 @@ public class MainView {
     private final WriterView writerView;
     private final PostView postView;
     private final LabelView labelView;
-    ConnectionPoolManager connectionManager = ConnectionPoolManager.getInstance();
+    ConnectionManager connectionManager = ConnectionManager.getInstance();
 
     public MainView() {
         this.scanner = new Scanner(System.in);
         WriterRepository writerRepository = new JdbcWriterRepository(connectionManager);
-        PostRepository postRepository = new JdbcPostRepository();
-        LabelRepository labelRepository = new JdbcLabelRepository();
+        PostRepository postRepository = new JdbcPostRepository(connectionManager);
+        LabelRepository labelRepository = new JdbcLabelRepository(connectionManager);
 
         WriterService writerService = new WriterServiceImpl(writerRepository);
         PostService postService = new PostServiceImpl(postRepository);
         LabelService labelService = new LabelServiceImpl(labelRepository);
 
-        WriterController writerController = new WriterControllerImpl(writerService);
-        PostController postController = new PostControllerImpl(postService);
-        LabelController labelController = new LabelControllerImpl(labelService);
+        WriterController writerController = new WriterController(writerService);
+        PostController postController = new PostController(postService);
+        LabelController labelController = new LabelController(labelService);
 
         this.writerView = new WriterView(writerController, scanner);
         this.postView = new PostView(postController, writerController, labelController, scanner);

@@ -3,6 +3,8 @@ package homework.org.app.repository.jdbc;
 import homework.org.app.exception.RepositoryException;
 import homework.org.app.model.Label;
 import homework.org.app.repository.LabelRepository;
+import homework.org.app.util.ConnectionManager;
+import lombok.AllArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,10 +14,10 @@ import java.util.List;
 
 import static homework.org.app.util.ConnectionPoolManager.*;
 
+@AllArgsConstructor
 public class JdbcLabelRepository implements LabelRepository {
 
-    public JdbcLabelRepository() {
-    }
+    private final ConnectionManager connectionManager;
 
     private static final String DELETE_SQL = """
             DELETE FROM label
@@ -38,7 +40,7 @@ public class JdbcLabelRepository implements LabelRepository {
 
     @Override
     public Label getById(Long id) {
-        try (var prepStatement = prepareStatement(GET_BY_ID_SQL);
+        try (var prepStatement = connectionManager.prepareStatement(GET_BY_ID_SQL);
              var resultSet = setParametersAndExecuteQuery(prepStatement, id)
         ) {
              if (resultSet.next()) {
@@ -67,7 +69,7 @@ public class JdbcLabelRepository implements LabelRepository {
 
     @Override
     public Label save(Label label) {
-        try (var prepStatement = prepareStatement(SAVE_LABEL_SQL,
+        try (var prepStatement = connectionManager.prepareStatement(SAVE_LABEL_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             setParameters(prepStatement, label.getName());
             prepStatement.executeUpdate();
@@ -84,7 +86,7 @@ public class JdbcLabelRepository implements LabelRepository {
 
     @Override
     public Label update(Label label) {
-        try (var prepStatement = prepareStatement(UPDATE_SQL)) {
+        try (var prepStatement = connectionManager.prepareStatement(UPDATE_SQL)) {
             setParameters(prepStatement, label.getName(), label.getId());;
             int affectedRows = prepStatement.executeUpdate();
             if (affectedRows == 0) {
@@ -98,7 +100,7 @@ public class JdbcLabelRepository implements LabelRepository {
 
     @Override
     public void deleteById(Long id){
-        try (var prepStatement = prepareStatement(DELETE_SQL)) {
+        try (var prepStatement = connectionManager.prepareStatement(DELETE_SQL)) {
             setParameters(prepStatement, id);
             prepStatement.executeUpdate();
         } catch (SQLException e) {

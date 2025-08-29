@@ -6,24 +6,26 @@ import homework.org.app.controller.WriterController;
 import homework.org.app.model.Label;
 import homework.org.app.model.Post;
 import homework.org.app.model.Writer;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
-import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+@AllArgsConstructor
 public class PostView implements EntityView<Post>{
+    @NonNull
     private final PostController postController;
-    private final WriterController writerController;
-    private final LabelController labelController;
-    private final Scanner scanner;
 
-    public PostView(PostController postController, WriterController writerController, LabelController labelController, Scanner scanner) {
-        this.postController = postController;
-        this.writerController = writerController;
-        this.labelController = labelController;
-        this.scanner = scanner;
-    }
+    @NonNull
+    private final WriterController writerController;
+
+    @NonNull
+    private final LabelController labelController;
+
+    @NonNull
+    private final Scanner scanner;
 
     @Override
     public void showMenu() {
@@ -95,11 +97,7 @@ public class PostView implements EntityView<Post>{
         scanner.nextLine();
 
         Post existing = null;
-        try {
-            existing = postController.getByID(id);
-        } catch (SQLException e) {
-            throw new RuntimeException("This id not founded ", e);
-        }
+        existing = postController.getByID(id);
         if (existing == null) {
             System.out.println("Пост с таким ID не найден");
             return;

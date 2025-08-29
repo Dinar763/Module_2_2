@@ -7,7 +7,8 @@ import homework.org.app.model.Post;
 import homework.org.app.model.Status;
 import homework.org.app.model.Writer;
 import homework.org.app.repository.WriterRepository;
-import homework.org.app.util.ConnectionPoolManager;
+import homework.org.app.util.ConnectionManager;
+import lombok.AllArgsConstructor;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,16 +17,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static homework.org.app.util.ConnectionPoolManager.prepareStatement;
 import static homework.org.app.util.ConnectionPoolManager.setParameters;
 
+@AllArgsConstructor
 public class JdbcWriterRepository implements WriterRepository {
 
-    private final ConnectionPoolManager connectionPoolManager;
-
-    public JdbcWriterRepository(ConnectionPoolManager connectionPoolManager) {
-        this.connectionPoolManager = connectionPoolManager;
-    }
+    private final ConnectionManager connectionManager;
 
     private static final String DELETE_SQL = """
             DELETE FROM writer 
@@ -75,7 +72,7 @@ public class JdbcWriterRepository implements WriterRepository {
         Writer writer = null;
         List<Post> posts = new ArrayList<>();
 
-        try (var prepStatement = prepareStatement(GET_BY_ID_SQL)) {
+        try (var prepStatement = connectionManager.prepareStatement(GET_BY_ID_SQL)) {
             prepStatement.setLong(1, id);
             var resultSet = prepStatement.executeQuery();
 
@@ -112,7 +109,7 @@ public class JdbcWriterRepository implements WriterRepository {
     @Override
     public List<Writer> getAll() {
         List<Writer> result = new ArrayList<>();
-        try(var prepStatement = prepareStatement(GET_ALL_SQL);
+        try(var prepStatement = connectionManager.prepareStatement(GET_ALL_SQL);
             var resultSet = prepStatement.executeQuery();
         ) {
 
@@ -130,7 +127,7 @@ public class JdbcWriterRepository implements WriterRepository {
         if (writer == null) {
             throw new IllegalArgumentException("Writer must not be null");
         }
-        try (var preparedStatement = prepareStatement(SAVE_WRITER_SQL,
+        try (var preparedStatement = connectionManager.prepareStatement(SAVE_WRITER_SQL,
                 Statement.RETURN_GENERATED_KEYS)) {
             setParameters(preparedStatement,
                     writer.getFirstname(),
@@ -161,7 +158,7 @@ public class JdbcWriterRepository implements WriterRepository {
             if (post == null || post.getContent() == null || post.getStatus() == null) {
                 continue;
             }
-            try (PreparedStatement statement = prepareStatement(SAVE_POST_SQL,
+            try (PreparedStatement statement = connectionManager.prepareStatement(SAVE_POST_SQL,
                     Statement.RETURN_GENERATED_KEYS)){
                 setParameters(statement,post.getContent(),
                         post.getStatus().name(),
@@ -184,7 +181,7 @@ public class JdbcWriterRepository implements WriterRepository {
     }
 
     private void savePostLabels(Post post){
-        try (var labelStatement = prepareStatement(SAVE_POST_LABEL_SQL)){
+        try (var labelStatement = connectionManager.prepareStatement(SAVE_POST_LABEL_SQL)){
             List<Label> labels = post.getLabels();
             if (labels == null || labels.isEmpty()) return;
             for (Label label: post.getLabels()) {
@@ -199,7 +196,7 @@ public class JdbcWriterRepository implements WriterRepository {
     }
 
     private void updateWriter(Writer writer) {
-        try (var prepStatement = prepareStatement(UPDATE_SQL)) {
+        try (var prepStatement = connectionManager.prepareStatement(UPDATE_SQL)) {
             prepStatement.setString(1, writer.getFirstname());
             prepStatement.setString(2, writer.getLastname());
             prepStatement.setLong(4, writer.getId());
@@ -217,7 +214,7 @@ public class JdbcWriterRepository implements WriterRepository {
             throw new IllegalArgumentException("Writer and writer ID must not be null");
         }
 
-        try (var connection = connectionPoolManager.get()) {
+        try (var connection = connectionManager.getConnection()) {
             connection.setAutoCommit(false);
             try {
                 try (var prepStatement = connection.prepareStatement(UPDATE_SQL)){
@@ -249,7 +246,7 @@ public class JdbcWriterRepository implements WriterRepository {
 
     @Override
     public void deleteById(Long id) {
-        try (var prepStatement = prepareStatement(DELETE_SQL)) {
+        try (var prepStatement = connectionManager.prepareStatement(DELETE_SQL)) {
             setParameters(prepStatement, id);
             int affectedRows = prepStatement.executeUpdate();
             if (affectedRows == 0) {
@@ -262,7 +259,7 @@ public class JdbcWriterRepository implements WriterRepository {
 
     @Override
     public Writer findByName(String firstname, String lastname)  {
-        try (PreparedStatement stmt = prepareStatement(FIND_BY_NAME_SQL)) {
+        try (PreparedStatement stmt = connectionManager.prepareStatement(FIND_BY_NAME_SQL)) {
             setParameters(stmt, firstname, lastname);
             ResultSet rs = stmt.executeQuery();
             return rs.next() ? mapRowToWriter(rs) : null;

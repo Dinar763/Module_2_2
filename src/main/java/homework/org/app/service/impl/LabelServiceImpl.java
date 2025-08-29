@@ -5,16 +5,15 @@ import homework.org.app.exception.ServiceException;
 import homework.org.app.model.Label;
 import homework.org.app.repository.LabelRepository;
 import homework.org.app.service.LabelService;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 import java.util.List;
-import java.util.Objects;
 
+@AllArgsConstructor
 public class LabelServiceImpl implements LabelService {
+    @NonNull
     private final LabelRepository repository;
-
-    public LabelServiceImpl(LabelRepository repository) {
-        this.repository = Objects.requireNonNull(repository, "Repository must not be null");
-    }
 
     @Override
     public Label getByID(Long id) {

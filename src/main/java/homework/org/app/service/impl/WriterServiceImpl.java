@@ -4,17 +4,16 @@ import homework.org.app.exception.ServiceException;
 import homework.org.app.model.Writer;
 import homework.org.app.repository.WriterRepository;
 import homework.org.app.service.WriterService;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 
+@AllArgsConstructor
 public class WriterServiceImpl implements WriterService  {
+    @NonNull
     private final WriterRepository repository;
-
-    public WriterServiceImpl(WriterRepository repository) {
-        this.repository = Objects.requireNonNull(repository, "Repository must not be null");
-    }
 
     @Override
     public Writer getByID(Long id) {

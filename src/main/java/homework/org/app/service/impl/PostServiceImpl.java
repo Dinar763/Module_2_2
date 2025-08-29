@@ -3,17 +3,15 @@ package homework.org.app.service.impl;
 import homework.org.app.model.Post;
 import homework.org.app.repository.PostRepository;
 import homework.org.app.service.PostService;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 import java.util.List;
-import java.util.Objects;
 
+@AllArgsConstructor
 public class PostServiceImpl implements PostService {
+    @NonNull
     private final PostRepository postRepository;
-
-    public PostServiceImpl(PostRepository postRepository) {
-        this.postRepository = Objects.requireNonNull(postRepository,
-                "Repository must not be null");
-    }
 
     @Override
     public Post getByID(Long id) {

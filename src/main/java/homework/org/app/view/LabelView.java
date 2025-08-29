@@ -3,20 +3,19 @@ package homework.org.app.view;
 import homework.org.app.controller.LabelController;
 import homework.org.app.exception.NotFoundException;
 import homework.org.app.model.Label;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
+@AllArgsConstructor
 public class LabelView implements EntityView<Label> {
+    @NonNull
     private final LabelController controller;
+    @NonNull
     private final Scanner scanner;
-
-    public LabelView(LabelController controller, Scanner scanner) {
-        this.controller = Objects.requireNonNull(controller);
-        this.scanner = Objects.requireNonNull(scanner);
-    }
 
     @Override
     public void showMenu() {

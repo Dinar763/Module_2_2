@@ -6,6 +6,8 @@ import homework.org.app.model.Post;
 import homework.org.app.model.Status;
 import homework.org.app.model.Writer;
 import homework.org.app.repository.PostRepository;
+import homework.org.app.util.ConnectionManager;
+import lombok.AllArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,10 +19,10 @@ import java.util.stream.Collectors;
 import static homework.org.app.util.ConnectionPoolManager.prepareStatement;
 import static homework.org.app.util.ConnectionPoolManager.setParameters;
 
+@AllArgsConstructor
 public class JdbcPostRepository implements PostRepository {
 
-    public JdbcPostRepository() {
-    }
+    private final ConnectionManager connectionManager;
 
     private static final String DELETE_SQL = """
             UPDATE post SET status = 'DELETED' 
@@ -70,7 +72,7 @@ public class JdbcPostRepository implements PostRepository {
         if (id == null) {
             throw new IllegalArgumentException("ID cannot be null");
         }
-        try (var prepStatement = prepareStatement(GET_BY_ID_SQL)) {
+        try (var prepStatement = connectionManager.prepareStatement(GET_BY_ID_SQL)) {
             setParameters(prepStatement, id);
             var resultSet = prepStatement.executeQuery();
             if (!resultSet.isBeforeFirst()) {
@@ -84,7 +86,7 @@ public class JdbcPostRepository implements PostRepository {
 
     @Override
     public List<Post> getAll() {
-        try(var prepStatement = prepareStatement(GET_ALL_SQL);
+        try(var prepStatement = connectionManager.prepareStatement(GET_ALL_SQL);
             var resultSet = prepStatement.executeQuery()
         ) {
             return mapResultSetToPosts(resultSet);
@@ -95,7 +97,7 @@ public class JdbcPostRepository implements PostRepository {
 
     @Override
     public Post save(Post post) {
-        try (var preparedStatement = prepareStatement(SAVE_POST_SQL,
+        try (var preparedStatement = connectionManager.prepareStatement(SAVE_POST_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             setParameters(preparedStatement, post.getContent(),
                     post.getStatus().name(),
@@ -116,7 +118,7 @@ public class JdbcPostRepository implements PostRepository {
 
     private void savePostLabels(Post post) {
         if (post.getLabels() != null && !post.getLabels().isEmpty()) {
-            try (var prepStatement = prepareStatement(SAVE_POST_LABEL_SQL)){
+            try (var prepStatement = connectionManager.prepareStatement(SAVE_POST_LABEL_SQL)){
                 for (Label label: post.getLabels()) {
                     if (label != null && label.getId() != null) {
                         setParameters(prepStatement, post.getId(), label.getId());
@@ -132,7 +134,7 @@ public class JdbcPostRepository implements PostRepository {
 
     @Override
     public void deleteById(Long id) {
-        try (var prepStatement = prepareStatement(DELETE_SQL)) {
+        try (var prepStatement = connectionManager.prepareStatement(DELETE_SQL)) {
             setParameters(prepStatement, id);
             prepStatement.executeUpdate();
         } catch (SQLException e) {
@@ -151,7 +153,7 @@ public class JdbcPostRepository implements PostRepository {
 
     @Override
     public Post update(Post post) {
-        try (var prepStatement = prepareStatement(UPDATE_SQL)){
+        try (var prepStatement = connectionManager.prepareStatement(UPDATE_SQL)){
             setParameters(prepStatement,
                     post.getContent(),
                     post.getStatus().name(),
@@ -179,7 +181,7 @@ public class JdbcPostRepository implements PostRepository {
         if (currentLabelsId.equals(newLabelsId)) {
             return;
         }
-        try (var deleteStatement = prepareStatement(
+        try (var deleteStatement = connectionManager.prepareStatement(
                 DELETE_POST_LABEL)) {
             setParameters(deleteStatement, post.getId());
             deleteStatement.executeUpdate();
@@ -203,7 +205,7 @@ public class JdbcPostRepository implements PostRepository {
 
     private List<Label> getCurrentLabelsId(Long postId) {
         List<Label> labels = new ArrayList<>();
-        try (var prepStatement = prepareStatement(SELECT_ID_FROM_LABEL_ID)){
+        try (var prepStatement = connectionManager.prepareStatement(SELECT_ID_FROM_LABEL_ID)){
             setParameters(prepStatement, postId);
             ResultSet rs = prepStatement.executeQuery();
             while (rs.next()) {
