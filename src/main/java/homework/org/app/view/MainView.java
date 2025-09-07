@@ -6,9 +6,9 @@ import homework.org.app.controller.WriterController;
 import homework.org.app.repository.LabelRepository;
 import homework.org.app.repository.PostRepository;
 import homework.org.app.repository.WriterRepository;
-import homework.org.app.repository.jdbc.JdbcLabelRepository;
-import homework.org.app.repository.jdbc.JdbcPostRepository;
-import homework.org.app.repository.jdbc.JdbcWriterRepository;
+import homework.org.app.repository.jdbc.JdbcLabelRepositoryImpl;
+import homework.org.app.repository.jdbc.JdbcPostRepositoryImpl;
+import homework.org.app.repository.jdbc.JdbcWriterRepositoryImpl;
 import homework.org.app.service.LabelService;
 import homework.org.app.service.PostService;
 import homework.org.app.service.WriterService;
@@ -29,9 +29,9 @@ public class MainView {
 
     public MainView() {
         this.scanner = new Scanner(System.in);
-        WriterRepository writerRepository = new JdbcWriterRepository(connectionManager);
-        PostRepository postRepository = new JdbcPostRepository(connectionManager);
-        LabelRepository labelRepository = new JdbcLabelRepository(connectionManager);
+        WriterRepository writerRepository = new JdbcWriterRepositoryImpl(connectionManager);
+        PostRepository postRepository = new JdbcPostRepositoryImpl(connectionManager);
+        LabelRepository labelRepository = new JdbcLabelRepositoryImpl(connectionManager);
 
         WriterService writerService = new WriterServiceImpl(writerRepository);
         PostService postService = new PostServiceImpl(postRepository);

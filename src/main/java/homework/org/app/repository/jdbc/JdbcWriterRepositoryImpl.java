@@ -20,7 +20,7 @@ import java.util.List;
 import static homework.org.app.util.ConnectionPoolManager.setParameters;
 
 @AllArgsConstructor
-public class JdbcWriterRepository implements WriterRepository {
+public class JdbcWriterRepositoryImpl implements WriterRepository {
 
     private final ConnectionManager connectionManager;
 
@@ -214,8 +214,7 @@ public class JdbcWriterRepository implements WriterRepository {
             throw new IllegalArgumentException("Writer and writer ID must not be null");
         }
 
-        try (var connection = connectionManager.getConnection()) {
-            connection.setAutoCommit(false);
+        try (var connection = connectionManager.getTransactionConnection()) {
             try {
                 try (var prepStatement = connection.prepareStatement(UPDATE_SQL)){
                     prepStatement.setString(1, writer.getFirstname());

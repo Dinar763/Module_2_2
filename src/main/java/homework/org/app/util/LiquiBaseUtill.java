@@ -14,8 +14,8 @@ public class LiquiBaseUtill {
 
     public static void applyMigrations() {
         String changeLogFile = "db/changelog/db.changelog-master.yaml";
-        try (Connection connection = ConnectionManager.getInstance()
-                                                      .getConnection()) {
+        try (Connection connection = ConnectionManager.getInstance().getAutoCommitConnection()
+             ) {
             Database database = DatabaseFactory.getInstance()
                                                .findCorrectDatabaseImplementation(new JdbcConnection(connection));
 

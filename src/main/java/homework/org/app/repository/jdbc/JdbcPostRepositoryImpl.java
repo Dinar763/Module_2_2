@@ -20,7 +20,7 @@ import static homework.org.app.util.ConnectionPoolManager.prepareStatement;
 import static homework.org.app.util.ConnectionPoolManager.setParameters;
 
 @AllArgsConstructor
-public class JdbcPostRepository implements PostRepository {
+public class JdbcPostRepositoryImpl implements PostRepository {
 
     private final ConnectionManager connectionManager;
 

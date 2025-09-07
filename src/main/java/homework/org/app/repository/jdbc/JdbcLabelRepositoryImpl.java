@@ -15,7 +15,7 @@ import java.util.List;
 import static homework.org.app.util.ConnectionPoolManager.*;
 
 @AllArgsConstructor
-public class JdbcLabelRepository implements LabelRepository {
+public class JdbcLabelRepositoryImpl implements LabelRepository {
 
     private final ConnectionManager connectionManager;
 
